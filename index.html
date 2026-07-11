@@ -19,6 +19,17 @@
     to change paths/posters.
   - Colors/fonts: all live as CSS variables at the top of <style>.
   - Contact details: update the .contact__grid block.
+
+  NEWBIE NOTES (read this if you're new to editing code!)
+  - The video "sub window" (pop-up) markup is in the section
+    called <div class="video-modal" id="videoModal"> near the
+    bottom of <body>. The copyright caption text and the link
+    live inside <div class="video-modal__caption">. Edit the
+    text there directly — it's plain sentences, safe to change.
+  - The Look Book carousel markup is inside
+    <div class="carousel" data-reveal> in the #gallery section.
+    To add a new photo, copy one whole <div class="look">...</div>
+    block and change its image paths/label.
   ============================================================
 -->
 <html lang="en">
@@ -232,21 +243,59 @@
 
   @media (max-width:760px){ .about{ grid-template-columns:1fr; } }
 
-  /* ---------- gallery ---------- */
-  .gallery__grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; }
+  /* ---------- gallery (card carousel) ---------- */
+  .carousel{
+    position:relative;
+    display:flex; align-items:center; gap:14px;
+    max-width:420px; margin:0 auto;
+  }
+  .carousel__viewport{
+    flex:1; overflow:hidden; border-radius:16px;
+  }
+  .carousel__track{
+    display:flex;
+    transition:transform .45s var(--ease);
+  }
+  .carousel__track .look{
+    flex:0 0 100%;
+    margin:0;
+  }
+  .carousel__arrow{
+    flex-shrink:0;
+    width:44px; height:44px; border-radius:50%;
+    background:var(--ivory); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; color:var(--ink);
+    transition:background .25s var(--ease), transform .25s var(--ease);
+  }
+  .carousel__arrow:hover, .carousel__arrow:focus-visible{
+    background:var(--gold); color:var(--ink); transform:scale(1.05);
+  }
+  .carousel__arrow svg{ width:20px; height:20px; }
+  .carousel__dots{
+    display:flex; justify-content:center; gap:8px; margin-top:18px;
+  }
+  .carousel__dots button{
+    width:8px; height:8px; border-radius:50%; border:none;
+    background:var(--line); cursor:pointer; padding:0;
+    transition:background .25s var(--ease), transform .25s var(--ease);
+  }
+  .carousel__dots button.is-active{ background:var(--gold-deep); transform:scale(1.3); }
+
   .look{
     border-radius:16px; position:relative; overflow:hidden; cursor:default;
     aspect-ratio:3/4;
     background:linear-gradient(155deg, hsl(var(--hue,20) 42% 88%), hsl(calc(var(--hue,20) + 24) 35% 74%));
-    transition:transform .4s var(--ease);
   }
-  .look:nth-child(3n){ aspect-ratio:1/1; }
-  .look:hover, .look:focus-visible{ transform:translateY(-4px); }
   .look img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
   .look__label{
     position:absolute; left:16px; bottom:16px; color:var(--ink);
     font-size:.8rem; letter-spacing:.1em; text-transform:uppercase;
     background:rgba(247,241,230,.72); padding:.45em .9em; border-radius:999px;
+  }
+
+  @media (min-width:600px){
+    .carousel{ max-width:600px; }
   }
 
   /* ---------- reels ---------- */
@@ -258,8 +307,8 @@
     aspect-ratio:9/16; border-radius:16px; position:relative; overflow:hidden;
     background:linear-gradient(160deg, var(--ink-soft), var(--ink));
   }
-  .reel-card video{
-    position:absolute; inset:0; width:100%; height:100%; object-fit:cover; background:var(--ink);
+  .reel-card img.reel__poster{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
   }
   .reel__play{
     position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
@@ -275,8 +324,45 @@
     background:rgba(28,23,18,.35); padding:.3em .7em; border-radius:999px;
     pointer-events:none;
   }
-  .reel-card.is-playing .reel__play,
-  .reel-card.is-playing .reel__label{ opacity:0; pointer-events:none; }
+
+  /* ---------- video "sub window" (modal) ---------- */
+  .video-modal{
+    position:fixed; inset:0; z-index:300;
+    display:none; align-items:center; justify-content:center;
+    padding:24px;
+  }
+  .video-modal.is-open{ display:flex; }
+  .video-modal__backdrop{
+    position:absolute; inset:0; background:rgba(28,23,18,.86); backdrop-filter:blur(4px);
+  }
+  .video-modal__box{
+    position:relative; z-index:1;
+    background:var(--ink); border-radius:18px; overflow:hidden;
+    width:100%; max-width:400px;
+    box-shadow:0 30px 70px rgba(0,0,0,.5);
+  }
+  .video-modal__close{
+    position:absolute; top:10px; right:10px; z-index:2;
+    width:38px; height:38px; border-radius:50%;
+    background:rgba(28,23,18,.55); border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; color:var(--ivory);
+  }
+  .video-modal__close svg{ width:18px; height:18px; }
+  .video-modal__video{
+    display:block; width:100%; max-height:70vh; background:#000;
+  }
+  .video-modal__caption{
+    padding:16px 18px 20px; color:rgba(247,241,230,.9);
+  }
+  .video-modal__caption p{
+    font-size:.82rem; line-height:1.6; margin:0 0 10px; color:rgba(247,241,230,.82);
+  }
+  .video-modal__link{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:.78rem; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--gold); text-decoration:none;
+  }
+  .video-modal__link:hover, .video-modal__link:focus-visible{ color:var(--gold-deep); }
 
   /* ---------- contact ---------- */
   .contact__grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:34px; margin-bottom:40px; }
@@ -311,6 +397,8 @@
   <symbol id="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></symbol>
   <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></symbol>
 </svg>
 
 <header class="site-header">
@@ -379,28 +467,47 @@
   <section class="section" id="gallery">
     <div class="section-inner">
       <p class="folio">02 — Look Book</p>
-      <div class="gallery__grid">
-        <div class="look" style="--hue:16" data-reveal>
-          <picture><source srcset="images/look-01.webp" type="image/webp"><img src="images/look-01.jpg" alt="Look 01 — Наталія Приплесь" width="349" height="366" loading="lazy"></picture>
-          <span class="look__label">Look 01</span>
+
+      <!--
+        CARD CAROUSEL — one look at a time, with left/right arrows.
+        To add a new photo: copy one whole <div class="look">...</div>
+        block (inside carousel__track) and edit its image + label.
+      -->
+      <div class="carousel" data-reveal>
+        <button class="carousel__arrow" id="lookPrev" type="button" aria-label="Previous look">
+          <svg><use href="#i-chevron-left"/></svg>
+        </button>
+
+        <div class="carousel__viewport">
+          <div class="carousel__track" id="lookTrack">
+            <div class="look" style="--hue:16">
+              <picture><source srcset="images/look-01.webp" type="image/webp"><img src="images/look-01.jpg" alt="Look 01 — Наталія Приплесь" width="349" height="366" loading="lazy"></picture>
+              <span class="look__label">Look 01</span>
+            </div>
+            <div class="look" style="--hue:38">
+              <picture><source srcset="images/look-02.webp" type="image/webp"><img src="images/look-02.jpg" alt="Look 02 — Наталія Приплесь" width="353" height="380" loading="lazy"></picture>
+              <span class="look__label">Look 02</span>
+            </div>
+            <div class="look" style="--hue:8">
+              <picture><source srcset="images/look-03.webp" type="image/webp"><img src="images/look-03.jpg" alt="Look 03 — Наталія Приплесь" width="347" height="354" loading="lazy"></picture>
+              <span class="look__label">Look 03</span>
+            </div>
+            <div class="look" style="--hue:48">
+              <picture><source srcset="images/look-04.webp" type="image/webp"><img src="images/look-04.jpg" alt="Look 04 — Наталія Приплесь" width="330" height="409" loading="lazy"></picture>
+              <span class="look__label">Look 04</span>
+            </div>
+            <div class="look" style="--hue:24">
+              <picture><source srcset="images/look-05.webp" type="image/webp"><img src="images/look-05.jpg" alt="Look 05 — Наталія Приплесь" width="342" height="392" loading="lazy"></picture>
+              <span class="look__label">Look 05</span>
+            </div>
+          </div>
         </div>
-        <div class="look" style="--hue:38" data-reveal>
-          <picture><source srcset="images/look-02.webp" type="image/webp"><img src="images/look-02.jpg" alt="Look 02 — Наталія Приплесь" width="353" height="380" loading="lazy"></picture>
-          <span class="look__label">Look 02</span>
-        </div>
-        <div class="look" style="--hue:8" data-reveal>
-          <picture><source srcset="images/look-03.webp" type="image/webp"><img src="images/look-03.jpg" alt="Look 03 — Наталія Приплесь" width="347" height="354" loading="lazy"></picture>
-          <span class="look__label">Look 03</span>
-        </div>
-        <div class="look" style="--hue:48" data-reveal>
-          <picture><source srcset="images/look-04.webp" type="image/webp"><img src="images/look-04.jpg" alt="Look 04 — Наталія Приплесь" width="330" height="409" loading="lazy"></picture>
-          <span class="look__label">Look 04</span>
-        </div>
-        <div class="look" style="--hue:24" data-reveal>
-          <picture><source srcset="images/look-05.webp" type="image/webp"><img src="images/look-05.jpg" alt="Look 05 — Наталія Приплесь" width="342" height="392" loading="lazy"></picture>
-          <span class="look__label">Look 05</span>
-        </div>
+
+        <button class="carousel__arrow" id="lookNext" type="button" aria-label="Next look">
+          <svg><use href="#i-chevron-right"/></svg>
+        </button>
       </div>
+      <div class="carousel__dots" id="lookDots"></div>
     </div>
   </section>
 
@@ -408,19 +515,21 @@
     <div class="section-inner">
       <p class="folio">03 — Reels</p>
       <div class="reels__grid">
-        <div class="reel-card" data-reveal>
-          <video poster="images/levideo1-poster.jpg" preload="none" playsinline>
-            <source src="videos/levideo1.mp4" type="video/mp4">
-          </video>
+        <!--
+          Each reel-card now opens the pop-up "sub window" when you click
+          play, instead of playing inline. data-video / data-poster tell
+          the pop-up which file to load — data-title is only used for the
+          aria-label on the button.
+        -->
+        <div class="reel-card" data-reveal data-video="videos/levideo1.mp4" data-poster="images/levideo1-poster.jpg" data-title="Reel 01">
+          <img class="reel__poster" src="images/levideo1-poster.jpg" alt="Reel 01 preview — Наталія Приплесь" loading="lazy">
           <button class="reel__play" type="button" aria-label="Play Reel 01">
             <svg><use href="#i-play"/></svg>
           </button>
           <span class="reel__label">Reel 01</span>
         </div>
-        <div class="reel-card" data-reveal>
-          <video poster="images/levideo2-poster.jpg" preload="none" playsinline>
-            <source src="videos/levideo2.mp4" type="video/mp4">
-          </video>
+        <div class="reel-card" data-reveal data-video="videos/levideo2.mp4" data-poster="images/levideo2-poster.jpg" data-title="Reel 02">
+          <img class="reel__poster" src="images/levideo2-poster.jpg" alt="Reel 02 preview — Наталія Приплесь" loading="lazy">
           <button class="reel__play" type="button" aria-label="Play Reel 02">
             <svg><use href="#i-play"/></svg>
           </button>
@@ -460,6 +569,28 @@
 
 </main>
 
+<!--
+  VIDEO "SUB WINDOW" (pop-up modal)
+  Opens when a Reel's play button is clicked. The caption text and
+  the link below the video are both easy to edit right here.
+-->
+<div class="video-modal" id="videoModal" aria-hidden="true">
+  <div class="video-modal__backdrop" data-close></div>
+  <div class="video-modal__box" role="dialog" aria-modal="true" aria-label="Video player">
+    <button class="video-modal__close" type="button" data-close aria-label="Close video">
+      <svg><use href="#i-close"/></svg>
+    </button>
+    <video class="video-modal__video" id="videoModalPlayer" controls playsinline></video>
+    <div class="video-modal__caption">
+      <p>This video is presented by Наталія Приплесь for fashion &amp; lifestyle content purposes. © 2025 Наталія Приплесь. All rights reserved — authorized use only.</p>
+      <a class="video-modal__link" href="https://t.me/pryples_cooperation" target="_blank" rel="noopener noreferrer">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-send"/></svg>
+        Contact for licensing
+      </a>
+    </div>
+  </div>
+</div>
+
 <footer class="site-footer">
   &copy; <span id="year">2026</span> Наталія Приплесь — Fashion · Beauty · Lifestyle
 </footer>
@@ -487,17 +618,74 @@
     }
   });
 
-  document.querySelectorAll('.reel-card').forEach(function(card){
-    var video = card.querySelector('video');
-    var playBtn = card.querySelector('.reel__play');
-    playBtn.addEventListener('click', function(){
-      video.controls = true;
-      video.play();
+  /* ---------- Look Book card carousel ---------- */
+  (function(){
+    var track = document.getElementById('lookTrack');
+    var slides = Array.prototype.slice.call(track.querySelectorAll('.look'));
+    var dotsWrap = document.getElementById('lookDots');
+    var prevBtn = document.getElementById('lookPrev');
+    var nextBtn = document.getElementById('lookNext');
+    var index = 0;
+
+    slides.forEach(function(_, i){
+      var dot = document.createElement('button');
+      dot.type = 'button';
+      dot.setAttribute('aria-label', 'Go to look ' + (i + 1));
+      dot.addEventListener('click', function(){ goTo(i); });
+      dotsWrap.appendChild(dot);
     });
-    video.addEventListener('play', function(){ card.classList.add('is-playing'); });
-    video.addEventListener('pause', function(){ card.classList.remove('is-playing'); });
-    video.addEventListener('ended', function(){ card.classList.remove('is-playing'); });
-  });
+    var dots = Array.prototype.slice.call(dotsWrap.children);
+
+    function render(){
+      track.style.transform = 'translateX(-' + (index * 100) + '%)';
+      dots.forEach(function(dot, i){ dot.classList.toggle('is-active', i === index); });
+    }
+    function goTo(i){
+      index = (i + slides.length) % slides.length;
+      render();
+    }
+
+    prevBtn.addEventListener('click', function(){ goTo(index - 1); });
+    nextBtn.addEventListener('click', function(){ goTo(index + 1); });
+
+    render();
+  })();
+
+  /* ---------- Video "sub window" (modal) ---------- */
+  (function(){
+    var modal = document.getElementById('videoModal');
+    var player = document.getElementById('videoModalPlayer');
+
+    function openModal(src){
+      player.src = src;
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      player.play();
+    }
+    function closeModal(){
+      player.pause();
+      player.removeAttribute('src');
+      player.load();
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    document.querySelectorAll('.reel-card').forEach(function(card){
+      var playBtn = card.querySelector('.reel__play');
+      playBtn.addEventListener('click', function(){
+        openModal(card.getAttribute('data-video'));
+      });
+    });
+
+    modal.querySelectorAll('[data-close]').forEach(function(el){
+      el.addEventListener('click', closeModal);
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && modal.classList.contains('is-open')){
+        closeModal();
+      }
+    });
+  })();
 
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function(entries){
