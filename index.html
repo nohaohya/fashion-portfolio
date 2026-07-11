@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  NATALIA PRYPLES — FASHION & LIFESTYLE, single-file website
+  ============================================================
+  ASSETS
+  This file expects two sibling folders, already included:
+    /images/  — portrait.webp+jpg, look-01..05.webp+jpg,
+                levideo1-poster / levideo2-poster .webp+jpg
+    /videos/  — levideo1.mp4, levideo2.mp4
+  Keep that folder layout when you upload this to hosting, or
+  update the src="" paths below to match wherever you put them.
+
+  TO SWAP IN NEW PHOTOS OR VIDEOS LATER
+  - Photos: replace the file in /images/ (keep the same name), or
+    search for class="look" (Look Book) / class="placeholder-tile"
+    (About portrait) to change paths.
+  - Videos: replace the file in /videos/, or search for class="reel"
+    to change paths/posters.
+  - Colors/fonts: all live as CSS variables at the top of <style>.
+  - Contact details: update the .contact__grid block.
+  ============================================================
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Наталія Приплесь — Fashion &amp; Lifestyle</title>
+<meta name="description" content="Наталія Приплесь — Lviv-based fashion, beauty &amp; lifestyle content creator. Open for brand collaborations.">
+<meta name="theme-color" content="#1c1712">
+<meta property="og:title" content="Наталія Приплесь — Fashion &amp; Lifestyle">
+<meta property="og:description" content="Lviv-based fashion, beauty &amp; lifestyle content creator, open for brand collaborations.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="images/portrait.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c1712'/%3E%3Ctext x='32' y='42' font-family='Georgia,serif' font-size='34' fill='%23b6874c' text-anchor='middle'%3EN%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ivory:#f7f1e6;
+    --ivory-dim:#efe4cf;
+    --ink:#1c1712;
+    --ink-soft:#2a2018;
+    --gold:#b6874c;
+    --gold-deep:#8c6a3b;
+    --line: rgba(28,23,18,.14);
+    --line-dark: rgba(247,241,230,.16);
+    --header-h: 76px;
+    --max: 1180px;
+    --ease: cubic-bezier(.22,.61,.36,1);
+  }
+
+  *,*::before,*::after{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  @media (prefers-reduced-motion:no-preference){ html{ scroll-behavior:smooth; } }
+  html{ scroll-padding-top: calc(var(--header-h) + 12px); }
+
+  body{
+    margin:0;
+    background:var(--ivory);
+    color:var(--ink);
+    font-family:'Poppins',system-ui,sans-serif;
+    font-weight:300;
+    line-height:1.7;
+    position:relative;
+  }
+  /* faint paper grain, purely decorative, no network request */
+  body::before{
+    content:"";
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    opacity:.05; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  h1,h2,h3{ font-family:'Cormorant Garamond',Georgia,serif; font-weight:600; margin:0; }
+  p{ margin:0 0 1em; }
+  a{ color:inherit; }
+  img{ max-width:100%; display:block; }
+  ul{ margin:0; padding:0; list-style:none; }
+  button{ font:inherit; color:inherit; }
+
+  .visually-hidden{
+    position:absolute; width:1px; height:1px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap;
+  }
+  .skip-link{
+    position:absolute; left:1rem; top:-3rem;
+    background:var(--ink); color:var(--ivory);
+    padding:.7em 1.2em; border-radius:999px; z-index:200;
+    transition:top .25s var(--ease);
+  }
+  .skip-link:focus{ top:1rem; }
+
+  :focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
+
+  /* ---------- header ---------- */
+  .site-header{
+    position:fixed; inset:0 0 auto 0; z-index:100; height:var(--header-h);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 clamp(20px,5vw,64px);
+    background:rgba(247,241,230,.88); backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{
+    font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:600;
+    font-size:1.5rem; letter-spacing:.02em; text-decoration:none;
+  }
+  .nav-toggle{
+    display:none; background:none; border:none; padding:.5em; cursor:pointer;
+    align-items:center; justify-content:center;
+  }
+  .nav-toggle svg{ width:24px; height:24px; }
+  .nav-toggle .icon-close{ display:none; }
+  .nav-toggle[aria-expanded="true"] .icon-menu{ display:none; }
+  .nav-toggle[aria-expanded="true"] .icon-close{ display:block; }
+
+  .nav ul{ display:flex; gap:clamp(20px,3vw,40px); }
+  .nav a{
+    text-decoration:none; font-size:.85rem; letter-spacing:.12em; text-transform:uppercase;
+    position:relative; padding-bottom:4px;
+  }
+  .nav a::after{
+    content:""; position:absolute; left:0; right:0; bottom:0; height:1px;
+    background:var(--gold); transform:scaleX(0); transform-origin:left;
+    transition:transform .3s var(--ease);
+  }
+  .nav a:hover::after, .nav a:focus-visible::after{ transform:scaleX(1); }
+
+  @media (max-width:860px){
+    .nav-toggle{ display:inline-flex; }
+    .nav{
+      position:absolute; top:var(--header-h); left:0; right:0;
+      background:var(--ivory); border-bottom:1px solid var(--line);
+      padding:8px clamp(20px,5vw,64px) 20px;
+      opacity:0; transform:translateY(-10px); pointer-events:none;
+      transition:opacity .25s var(--ease), transform .25s var(--ease);
+    }
+    .nav.is-open{ opacity:1; transform:translateY(0); pointer-events:auto; }
+    .nav ul{ flex-direction:column; gap:14px; }
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:100svh; min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; gap:22px; padding:calc(var(--header-h) + 40px) 24px 80px;
+    background:
+      radial-gradient(60% 55% at 50% 28%, rgba(182,135,76,.20), transparent 70%),
+      linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%);
+    color:var(--ivory);
+    position:relative; overflow:hidden;
+  }
+  .hero__kicker{
+    font-size:.78rem; letter-spacing:.32em; text-transform:uppercase; color:var(--gold);
+  }
+  .hero__name{
+    font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:600;
+    font-size:clamp(2.6rem, 8.5vw, 5.6rem); line-height:1.05; max-width:16ch;
+  }
+  .hero__sub{
+    max-width:38ch; font-size:1rem; color:rgba(247,241,230,.8); margin:0;
+  }
+  .hero__actions{ display:flex; flex-wrap:wrap; gap:14px; justify-content:center; margin-top:8px; }
+  .chip{
+    display:inline-flex; align-items:center; gap:8px;
+    border:1px solid var(--line-dark); border-radius:999px;
+    padding:.6em 1.2em; font-size:.82rem; letter-spacing:.02em; color:rgba(247,241,230,.85);
+  }
+  .chip svg{ width:15px; height:15px; }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--gold); color:var(--ink); text-decoration:none;
+    padding:.85em 1.8em; border-radius:999px; font-size:.85rem;
+    letter-spacing:.05em; font-weight:500; border:none; cursor:pointer;
+    transition:background .25s var(--ease), transform .25s var(--ease);
+  }
+  .btn:hover, .btn:focus-visible{ background:var(--gold-deep); transform:translateY(-1px); }
+
+  /* ---------- ticker ---------- */
+  .ticker{
+    overflow:hidden; background:var(--gold); color:var(--ink);
+    padding:12px 0; border-bottom:1px solid rgba(28,23,18,.1);
+  }
+  .ticker__track{
+    display:flex; width:max-content; gap:3em;
+    animation:scroll-left 26s linear infinite;
+  }
+  .ticker__track span{
+    font-size:.78rem; letter-spacing:.22em; text-transform:uppercase; white-space:nowrap;
+  }
+  @keyframes scroll-left{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+  @media (prefers-reduced-motion:reduce){ .ticker__track{ animation:none; } .ticker{ overflow-x:auto; } }
+
+  /* ---------- sections ---------- */
+  .section{ padding:clamp(64px,10vw,120px) clamp(20px,5vw,64px); position:relative; }
+  .section--dark{ background:var(--ink); color:var(--ivory); }
+  .section-inner{ max-width:var(--max); margin:0 auto; }
+  .folio{
+    display:flex; align-items:center; gap:16px; margin-bottom:44px;
+    font-size:.78rem; letter-spacing:.22em; text-transform:uppercase; color:var(--gold-deep);
+  }
+  .section--dark .folio{ color:var(--gold); }
+  .folio::after{ content:""; flex:1; height:1px; background:var(--line); }
+  .section--dark .folio::after{ background:var(--line-dark); }
+
+  [data-reveal]{ opacity:0; transform:translateY(18px); transition:opacity .7s var(--ease), transform .7s var(--ease); }
+  [data-reveal].is-visible{ opacity:1; transform:none; }
+  @media (prefers-reduced-motion:reduce){ [data-reveal]{ opacity:1!important; transform:none!important; transition:none!important; } }
+
+  /* ---------- about ---------- */
+  .about{ display:grid; grid-template-columns:.8fr 1fr; gap:clamp(28px,5vw,64px); align-items:center; }
+  .placeholder-tile{
+    border-radius:18px; aspect-ratio:4/5; position:relative; overflow:hidden;
+    background:linear-gradient(160deg, hsl(var(--hue,32) 45% 90%), hsl(calc(var(--hue,32) + 18) 38% 78%));
+  }
+  .placeholder-tile img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .placeholder-tile__label{
+    position:absolute; left:14px; bottom:14px; font-size:.72rem;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--ink);
+    background:rgba(247,241,230,.75); padding:.4em .8em; border-radius:999px;
+  }
+  .about__content h2{ font-size:clamp(1.7rem,3vw,2.3rem); margin-bottom:20px; font-style:italic; }
+  .about__lede::first-letter{
+    font-family:'Cormorant Garamond',serif; font-weight:600; color:var(--gold-deep);
+    font-size:3.2em; float:left; line-height:.8; padding:.05em .08em 0 0;
+  }
+  .meta-list{ margin-top:26px; display:flex; flex-direction:column; gap:14px; }
+  .meta-list li{ display:flex; align-items:flex-start; gap:12px; font-size:.95rem; }
+  .meta-list svg{ width:19px; height:19px; flex-shrink:0; margin-top:3px; color:var(--gold-deep); }
+
+  @media (max-width:760px){ .about{ grid-template-columns:1fr; } }
+
+  /* ---------- gallery ---------- */
+  .gallery__grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; }
+  .look{
+    border-radius:16px; position:relative; overflow:hidden; cursor:default;
+    aspect-ratio:3/4;
+    background:linear-gradient(155deg, hsl(var(--hue,20) 42% 88%), hsl(calc(var(--hue,20) + 24) 35% 74%));
+    transition:transform .4s var(--ease);
+  }
+  .look:nth-child(3n){ aspect-ratio:1/1; }
+  .look:hover, .look:focus-visible{ transform:translateY(-4px); }
+  .look img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .look__label{
+    position:absolute; left:16px; bottom:16px; color:var(--ink);
+    font-size:.8rem; letter-spacing:.1em; text-transform:uppercase;
+    background:rgba(247,241,230,.72); padding:.45em .9em; border-radius:999px;
+  }
+
+  /* ---------- reels ---------- */
+  .reels__grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,260px));
+    justify-content:center; gap:26px;
+  }
+  .reel-card{
+    aspect-ratio:9/16; border-radius:16px; position:relative; overflow:hidden;
+    background:linear-gradient(160deg, var(--ink-soft), var(--ink));
+  }
+  .reel-card video{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover; background:var(--ink);
+  }
+  .reel__play{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:56px; height:56px; border-radius:50%; background:var(--gold);
+    display:flex; align-items:center; justify-content:center; color:var(--ink);
+    border:none; cursor:pointer; transition:transform .3s var(--ease), opacity .3s var(--ease);
+  }
+  .reel-card:hover .reel__play{ transform:translate(-50%,-50%) scale(1.08); }
+  .reel__play svg{ width:20px; height:20px; margin-left:2px; }
+  .reel__label{
+    position:absolute; left:14px; bottom:12px; font-size:.74rem;
+    letter-spacing:.14em; text-transform:uppercase; color:rgba(247,241,230,.9);
+    background:rgba(28,23,18,.35); padding:.3em .7em; border-radius:999px;
+    pointer-events:none;
+  }
+  .reel-card.is-playing .reel__play,
+  .reel-card.is-playing .reel__label{ opacity:0; pointer-events:none; }
+
+  /* ---------- contact ---------- */
+  .contact__grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:34px; margin-bottom:40px; }
+  .contact__item h3{ font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); font-family:'Poppins',sans-serif; font-weight:500; margin-bottom:10px; }
+  .contact__item{ display:flex; gap:14px; }
+  .contact__item svg{ width:20px; height:20px; color:var(--gold); flex-shrink:0; margin-top:2px; }
+  .contact__item a{ text-decoration:none; }
+  .contact__item a:hover, .contact__item a:focus-visible{ color:var(--gold); }
+
+  /* ---------- footer ---------- */
+  .site-footer{
+    background:var(--ink); color:rgba(247,241,230,.72);
+    text-align:center; padding:26px 20px; font-size:.78rem;
+    border-top:1px solid var(--line-dark); letter-spacing:.04em;
+  }
+
+  .sr-icons{ position:absolute; width:0; height:0; overflow:hidden; }
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<!-- shared icon sprite, no external requests -->
+<svg class="sr-icons" aria-hidden="true">
+  <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-7.2 7-12a7 7 0 1 0-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.3"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7.5-4.6-9.5-9.1C1.2 7.7 2.7 4.6 5.8 4.1a4.7 4.7 0 0 1 6.2 2 4.7 4.7 0 0 1 6.2-2c3.1.5 4.6 3.6 3.3 6.9C19.5 15.4 12 20 12 20z"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9L12 2z"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 10.8c1.4 2.8 3.8 5.2 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.3 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.4 21 3 13.6 3 4.6c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.3 1L6.6 10.8z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 6.5l9 6.5 9-6.5"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+</svg>
+
+<header class="site-header">
+  <a href="#hero" class="brand">Natalia</a>
+  <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav" aria-label="Toggle navigation menu">
+    <svg class="icon-menu"><use href="#i-menu"/></svg>
+    <svg class="icon-close"><use href="#i-close"/></svg>
+  </button>
+  <nav class="nav" id="siteNav">
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#gallery">Look Book</a></li>
+      <li><a href="#videos">Reels</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+
+  <section class="hero" id="hero">
+    <p class="hero__kicker">Fashion — Beauty — Lifestyle</p>
+    <h1 class="hero__name" lang="uk">Наталія Приплесь</h1>
+    <p class="hero__sub">Everyday elegance and honest style stories, shared from Lviv.</p>
+    <div class="hero__actions">
+      <a class="btn" href="https://t.me/pryples_cooperation" target="_blank" rel="noopener noreferrer">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-send"/></svg>
+        Let's collaborate
+      </a>
+    </div>
+    <div class="hero__actions">
+      <span class="chip"><svg><use href="#i-pin"/></svg> Lviv, Ukraine</span>
+    </div>
+  </section>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker__track">
+      <span>Fashion&nbsp;&nbsp;·&nbsp;&nbsp;Beauty&nbsp;&nbsp;·&nbsp;&nbsp;Skincare&nbsp;&nbsp;·&nbsp;&nbsp;Lifestyle&nbsp;&nbsp;·&nbsp;&nbsp;Collaborations&nbsp;&nbsp;·&nbsp;&nbsp;</span>
+      <span>Fashion&nbsp;&nbsp;·&nbsp;&nbsp;Beauty&nbsp;&nbsp;·&nbsp;&nbsp;Skincare&nbsp;&nbsp;·&nbsp;&nbsp;Lifestyle&nbsp;&nbsp;·&nbsp;&nbsp;Collaborations&nbsp;&nbsp;·&nbsp;&nbsp;</span>
+    </div>
+  </div>
+
+  <section class="section" id="about">
+    <div class="section-inner">
+      <p class="folio">01 — About</p>
+      <div class="about">
+        <div class="placeholder-tile" style="--hue:30" data-reveal>
+          <picture>
+            <source srcset="images/portrait.webp" type="image/webp">
+            <img src="images/portrait.jpg" alt="Portrait of Наталія Приплесь" width="342" height="413" loading="lazy">
+          </picture>
+        </div>
+        <div class="about__content" data-reveal>
+          <h2>A little about me</h2>
+          <p class="about__lede">I share my passion for fashion, beauty, lifestyle, elegant aesthetics and everyday inspiration. My content combines modern style with authentic moments and premium visual storytelling.</p>
+          <ul class="meta-list">
+            <li><svg><use href="#i-pin"/></svg> Based in Lviv, Ukraine</li>
+            <li><svg><use href="#i-heart"/></svg> Currently expecting a baby</li>
+            <li><svg><use href="#i-spark"/></svg> Open for collaborations with fashion, beauty, skincare &amp; lifestyle brands</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="gallery">
+    <div class="section-inner">
+      <p class="folio">02 — Look Book</p>
+      <div class="gallery__grid">
+        <div class="look" style="--hue:16" data-reveal>
+          <picture><source srcset="images/look-01.webp" type="image/webp"><img src="images/look-01.jpg" alt="Look 01 — Наталія Приплесь" width="349" height="366" loading="lazy"></picture>
+          <span class="look__label">Look 01</span>
+        </div>
+        <div class="look" style="--hue:38" data-reveal>
+          <picture><source srcset="images/look-02.webp" type="image/webp"><img src="images/look-02.jpg" alt="Look 02 — Наталія Приплесь" width="353" height="380" loading="lazy"></picture>
+          <span class="look__label">Look 02</span>
+        </div>
+        <div class="look" style="--hue:8" data-reveal>
+          <picture><source srcset="images/look-03.webp" type="image/webp"><img src="images/look-03.jpg" alt="Look 03 — Наталія Приплесь" width="347" height="354" loading="lazy"></picture>
+          <span class="look__label">Look 03</span>
+        </div>
+        <div class="look" style="--hue:48" data-reveal>
+          <picture><source srcset="images/look-04.webp" type="image/webp"><img src="images/look-04.jpg" alt="Look 04 — Наталія Приплесь" width="330" height="409" loading="lazy"></picture>
+          <span class="look__label">Look 04</span>
+        </div>
+        <div class="look" style="--hue:24" data-reveal>
+          <picture><source srcset="images/look-05.webp" type="image/webp"><img src="images/look-05.jpg" alt="Look 05 — Наталія Приплесь" width="342" height="392" loading="lazy"></picture>
+          <span class="look__label">Look 05</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="videos">
+    <div class="section-inner">
+      <p class="folio">03 — Reels</p>
+      <div class="reels__grid">
+        <div class="reel-card" data-reveal>
+          <video poster="images/levideo1-poster.jpg" preload="none" playsinline>
+            <source src="videos/levideo1.mp4" type="video/mp4">
+          </video>
+          <button class="reel__play" type="button" aria-label="Play Reel 01">
+            <svg><use href="#i-play"/></svg>
+          </button>
+          <span class="reel__label">Reel 01</span>
+        </div>
+        <div class="reel-card" data-reveal>
+          <video poster="images/levideo2-poster.jpg" preload="none" playsinline>
+            <source src="videos/levideo2.mp4" type="video/mp4">
+          </video>
+          <button class="reel__play" type="button" aria-label="Play Reel 02">
+            <svg><use href="#i-play"/></svg>
+          </button>
+          <span class="reel__label">Reel 02</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--dark" id="contact">
+    <div class="section-inner">
+      <p class="folio">04 — Contact</p>
+      <div class="contact__grid">
+        <div class="contact__item" data-reveal>
+          <svg><use href="#i-pin"/></svg>
+          <div><h3>Address</h3><p>375 York Ave, Winnipeg, MB R3C 3J3, Canada</p></div>
+        </div>
+        <div class="contact__item" data-reveal>
+          <svg><use href="#i-phone"/></svg>
+          <div><h3>Phone</h3><p><a href="tel:+12049561720">+1 204 956 1720</a></p></div>
+        </div>
+        <div class="contact__item" data-reveal>
+          <svg><use href="#i-mail"/></svg>
+          <div><h3>Email</h3><p><a href="mailto:nataliapryples@outlook.com">nataliapryples@outlook.com</a></p></div>
+        </div>
+        <div class="contact__item" data-reveal>
+          <svg><use href="#i-send"/></svg>
+          <div><h3>Telegram</h3><p><a href="https://t.me/pryples_cooperation" target="_blank" rel="noopener noreferrer">@pryples_cooperation</a></p></div>
+        </div>
+      </div>
+      <a class="btn" href="https://t.me/pryples_cooperation" target="_blank" rel="noopener noreferrer">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-send"/></svg>
+        Message on Telegram
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  &copy; <span id="year">2026</span> Наталія Приплесь — Fashion · Beauty · Lifestyle
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  var toggle = document.getElementById('navToggle');
+  var nav = document.getElementById('siteNav');
+  toggle.addEventListener('click', function(){
+    var open = nav.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  nav.querySelectorAll('a').forEach(function(link){
+    link.addEventListener('click', function(){
+      nav.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && nav.classList.contains('is-open')){
+      nav.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.focus();
+    }
+  });
+
+  document.querySelectorAll('.reel-card').forEach(function(card){
+    var video = card.querySelector('video');
+    var playBtn = card.querySelector('.reel__play');
+    playBtn.addEventListener('click', function(){
+      video.controls = true;
+      video.play();
+    });
+    video.addEventListener('play', function(){ card.classList.add('is-playing'); });
+    video.addEventListener('pause', function(){ card.classList.remove('is-playing'); });
+    video.addEventListener('ended', function(){ card.classList.remove('is-playing'); });
+  });
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('[data-reveal]').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('[data-reveal]').forEach(function(el){ el.classList.add('is-visible'); });
+  }
+</script>
+
+</body>
+</html>
