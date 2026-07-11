@@ -357,12 +357,15 @@
   .video-modal__caption p{
     font-size:.82rem; line-height:1.6; margin:0 0 10px; color:rgba(247,241,230,.82);
   }
+  .video-modal__links{ display:flex; flex-wrap:wrap; gap:16px; align-items:center; }
   .video-modal__link{
     display:inline-flex; align-items:center; gap:6px;
     font-size:.78rem; letter-spacing:.06em; text-transform:uppercase;
     color:var(--gold); text-decoration:none;
+    background:none; border:none; padding:0; cursor:pointer;
   }
   .video-modal__link:hover, .video-modal__link:focus-visible{ color:var(--gold-deep); }
+  .video-modal__link--copy.is-copied{ color:#8fbf7a; }
 
   /* ---------- contact ---------- */
   .contact__grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:34px; margin-bottom:40px; }
@@ -521,14 +524,14 @@
           the pop-up which file to load — data-title is only used for the
           aria-label on the button.
         -->
-        <div class="reel-card" data-reveal data-video="videos/levideo1.mp4" data-poster="images/levideo1-poster.jpg" data-title="Reel 01">
+        <div class="reel-card" data-reveal data-id="reel-1" data-video="videos/levideo1.mp4" data-poster="images/levideo1-poster.jpg" data-title="Reel 01">
           <img class="reel__poster" src="images/levideo1-poster.jpg" alt="Reel 01 preview — Наталія Приплесь" loading="lazy">
           <button class="reel__play" type="button" aria-label="Play Reel 01">
             <svg><use href="#i-play"/></svg>
           </button>
           <span class="reel__label">Reel 01</span>
         </div>
-        <div class="reel-card" data-reveal data-video="videos/levideo2.mp4" data-poster="images/levideo2-poster.jpg" data-title="Reel 02">
+        <div class="reel-card" data-reveal data-id="reel-2" data-video="videos/levideo2.mp4" data-poster="images/levideo2-poster.jpg" data-title="Reel 02">
           <img class="reel__poster" src="images/levideo2-poster.jpg" alt="Reel 02 preview — Наталія Приплесь" loading="lazy">
           <button class="reel__play" type="button" aria-label="Play Reel 02">
             <svg><use href="#i-play"/></svg>
@@ -582,11 +585,17 @@
     </button>
     <video class="video-modal__video" id="videoModalPlayer" controls playsinline></video>
     <div class="video-modal__caption">
-      <p>This video is presented by Наталія Приплесь for fashion &amp; lifestyle content purposes. © 2025 Наталія Приплесь. All rights reserved — authorized use only.</p>
-      <a class="video-modal__link" href="https://t.me/pryples_cooperation" target="_blank" rel="noopener noreferrer">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-send"/></svg>
-        Contact for licensing
-      </a>
+      <p>This video is © 2025 Наталія Приплесь — fashion &amp; lifestyle content. It is authorized for playback on this website only. Rehosting, re-uploading, downloading, or sharing this video on any other site or platform is <strong>not permitted</strong>.</p>
+      <div class="video-modal__links">
+        <button class="video-modal__link video-modal__link--copy" id="videoModalCopyLink" type="button">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1.5-1.5"/></svg>
+          <span id="videoModalCopyLabel">Copy link to this video</span>
+        </button>
+        <a class="video-modal__link" href="https://t.me/pryples_cooperation" target="_blank" rel="noopener noreferrer">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-send"/></svg>
+          Contact for licensing
+        </a>
+      </div>
     </div>
   </div>
 </div>
@@ -655,36 +664,98 @@
   (function(){
     var modal = document.getElementById('videoModal');
     var player = document.getElementById('videoModalPlayer');
+    var copyBtn = document.getElementById('videoModalCopyLink');
+    var copyLabel = document.getElementById('videoModalCopyLabel');
+    var cards = document.querySelectorAll('.reel-card');
+    var currentId = null;
 
-    function openModal(src){
-      player.src = src;
+    function findCardById(id){
+      var found = null;
+      cards.forEach(function(card){
+        if (card.getAttribute('data-id') === id) found = card;
+      });
+      return found;
+    }
+
+    function openModal(card, opts){
+      opts = opts || {};
+      currentId = card.getAttribute('data-id');
+      player.src = card.getAttribute('data-video');
       modal.classList.add('is-open');
       modal.setAttribute('aria-hidden', 'false');
       player.play();
+      // Give this video its own shareable address, e.g. yoursite.com/#reel-1
+      if (!opts.skipHash) {
+        history.pushState({ video: currentId }, '', '#' + currentId);
+      }
     }
-    function closeModal(){
+    function closeModal(opts){
+      opts = opts || {};
       player.pause();
       player.removeAttribute('src');
       player.load();
       modal.classList.remove('is-open');
       modal.setAttribute('aria-hidden', 'true');
+      currentId = null;
+      if (!opts.skipHash && location.hash) {
+        history.pushState({}, '', location.pathname + location.search);
+      }
     }
 
-    document.querySelectorAll('.reel-card').forEach(function(card){
+    cards.forEach(function(card){
       var playBtn = card.querySelector('.reel__play');
       playBtn.addEventListener('click', function(){
-        openModal(card.getAttribute('data-video'));
+        openModal(card);
       });
     });
 
     modal.querySelectorAll('[data-close]').forEach(function(el){
-      el.addEventListener('click', closeModal);
+      el.addEventListener('click', function(){ closeModal(); });
     });
     document.addEventListener('keydown', function(e){
       if(e.key === 'Escape' && modal.classList.contains('is-open')){
         closeModal();
       }
     });
+
+    // "Copy link to this video" button — copies a link that reopens
+    // this exact video's pop-up window when someone else opens it.
+    copyBtn.addEventListener('click', function(){
+      if (!currentId) return;
+      var shareUrl = location.origin + location.pathname + '#' + currentId;
+      var done = function(){
+        copyLabel.textContent = 'Link copied!';
+        copyBtn.classList.add('is-copied');
+        setTimeout(function(){
+          copyLabel.textContent = 'Copy link to this video';
+          copyBtn.classList.remove('is-copied');
+        }, 2000);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(shareUrl).then(done).catch(function(){
+          window.prompt('Copy this link:', shareUrl);
+        });
+      } else {
+        window.prompt('Copy this link:', shareUrl);
+      }
+    });
+
+    // If someone opens a link like yoursite.com/#reel-1, open that
+    // video's pop-up automatically.
+    function openFromHash(){
+      var id = location.hash.replace('#', '');
+      if (!id) return;
+      var card = findCardById(id);
+      if (card) openModal(card, { skipHash: true });
+    }
+    window.addEventListener('popstate', function(){
+      if (location.hash) {
+        openFromHash();
+      } else {
+        closeModal({ skipHash: true });
+      }
+    });
+    openFromHash();
   })();
 
   if ('IntersectionObserver' in window) {
