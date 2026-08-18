@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  FAB & FIERCE — DIGITAL RUNWAY FASHION SHOW, single-file site
+  ============================================================
+  ASSETS THIS FILE EXPECTS (folders already referenced below —
+  add your own files with these exact names, or edit the src=""
+  paths to match whatever you use):
+    /images/  — look-01.jpg .. look-06.jpg
+    /videos/  — levideo1.mp4, levideo2.mp4
+
+  TO SWAP IN NEW PHOTOS OR VIDEOS LATER
+  - Photos: replace the file in /images/ (keep the same name), or
+    search for class="look" (Runway Looks) / class="placeholder-tile"
+    (The Show still) to change paths.
+  - Videos: replace the file in /videos/, or search for
+    class="film-card" to change paths.
+  - Colors/fonts: all live as CSS variables at the top of <style>.
+  - Contact details: update the .contact__grid block and the
+    mailto: links — search for "PLACEHOLDER" to find every one.
+
+  NEWBIE NOTES (read this if you're new to editing code!)
+  - The video "sub window" (pop-up) markup is in the section
+    called <div class="video-modal" id="videoModal"> near the
+    bottom of <body>. The caption text and the link live inside
+    <div class="video-modal__caption"> — plain sentences, safe
+    to edit directly.
+  - The Runway Looks carousel markup is inside
+    <div class="carousel" data-reveal> in the #looks section.
+    To add a new look, copy one whole <div class="look">...</div>
+    block and change its image path/label.
+  ============================================================
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAB &amp; FIERCE — Digital Runway Fashion Show</title>
+<meta name="description" content="FAB &amp; FIERCE — the runway magic of the digital world. Front row access to every look, every walk, streamed to a global audience.">
+<meta name="theme-color" content="#f5f4f8">
+<meta property="og:title" content="FAB &amp; FIERCE — Digital Runway Fashion Show">
+<meta property="og:description" content="Front row access to all things fab and fierce — a fashion show built for the digital world.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="images/look-01.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23151220'/%3E%3Ctext x='32' y='42' font-family='Arial,sans-serif' font-weight='800' font-size='28' fill='%238c7dff' text-anchor='middle'%3EFF%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800&family=Sora:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pearl:#f5f4f8;
+    --pearl-2:#ece9f4;
+    --ink:#151220;
+    --ink-dim: rgba(21,18,32,.64);
+    --ink-faint: rgba(21,18,32,.42);
+    --deep:#0c0a14;
+    --deep-raised:#161228;
+    --violet:#8c7dff;
+    --pink:#ff86d1;
+    --mint:#7ff0cf;
+    --grad: linear-gradient(90deg, var(--violet), var(--pink), var(--mint));
+    --line: rgba(21,18,32,.14);
+    --line-strong: rgba(21,18,32,.28);
+    --line-light: rgba(245,244,248,.16);
+    --line-light-strong: rgba(245,244,248,.3);
+    --header-h: 76px;
+    --max: 1180px;
+    --ease: cubic-bezier(.22,.61,.36,1);
+  }
+
+  *,*::before,*::after{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  @media (prefers-reduced-motion:no-preference){ html{ scroll-behavior:smooth; } }
+  html{ scroll-padding-top: calc(var(--header-h) + 12px); }
+
+  body{
+    margin:0;
+    background:var(--pearl);
+    color:var(--ink);
+    font-family:'Sora',system-ui,sans-serif;
+    font-weight:400;
+    line-height:1.7;
+    position:relative;
+  }
+  /* faint grain, purely decorative, no network request */
+  body::before{
+    content:"";
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    opacity:.045; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  h1,h2,h3{ font-family:'Unbounded',sans-serif; font-weight:700; margin:0; letter-spacing:-.01em; }
+  p{ margin:0 0 1em; }
+  a{ color:inherit; }
+  img{ max-width:100%; display:block; }
+  ul{ margin:0; padding:0; list-style:none; }
+  button{ font:inherit; color:inherit; }
+
+  .eyebrow{
+    font-family:'Space Grotesk',monospace; font-size:.74rem; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--violet);
+  }
+
+  .visually-hidden{
+    position:absolute; width:1px; height:1px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap;
+  }
+  .skip-link{
+    position:absolute; left:1rem; top:-3rem;
+    background:var(--ink); color:var(--pearl);
+    padding:.7em 1.2em; border-radius:999px; z-index:200;
+    transition:top .25s var(--ease); font-family:'Space Grotesk',monospace; font-size:.85rem;
+  }
+  .skip-link:focus{ top:1rem; }
+
+  :focus-visible{ outline:2px solid var(--violet); outline-offset:3px; }
+
+  /* ---------- header ---------- */
+  .site-header{
+    position:fixed; inset:0 0 auto 0; z-index:100; height:var(--header-h);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 clamp(20px,5vw,64px);
+    background:rgba(245,244,248,.86); backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{
+    font-family:'Unbounded',sans-serif; font-weight:800; font-size:1.15rem;
+    letter-spacing:.01em; text-decoration:none; color:var(--ink);
+  }
+  .brand span{
+    background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .nav-toggle{
+    display:none; background:none; border:none; padding:.5em; cursor:pointer;
+    align-items:center; justify-content:center;
+  }
+  .nav-toggle svg{ width:24px; height:24px; }
+  .nav-toggle .icon-close{ display:none; }
+  .nav-toggle[aria-expanded="true"] .icon-menu{ display:none; }
+  .nav-toggle[aria-expanded="true"] .icon-close{ display:block; }
+
+  .nav ul{ display:flex; gap:clamp(20px,3vw,40px); }
+  .nav a{
+    text-decoration:none; font-family:'Space Grotesk',monospace;
+    font-size:.8rem; letter-spacing:.06em; text-transform:uppercase;
+    position:relative; padding-bottom:4px; color:var(--ink-dim);
+  }
+  .nav a::after{
+    content:""; position:absolute; left:0; right:0; bottom:0; height:2px;
+    background:var(--grad); transform:scaleX(0); transform-origin:left;
+    transition:transform .3s var(--ease);
+  }
+  .nav a:hover, .nav a:focus-visible{ color:var(--ink); }
+  .nav a:hover::after, .nav a:focus-visible::after{ transform:scaleX(1); }
+
+  @media (max-width:860px){
+    .nav-toggle{ display:inline-flex; }
+    .nav{
+      position:absolute; top:var(--header-h); left:0; right:0;
+      background:var(--pearl); border-bottom:1px solid var(--line);
+      padding:8px clamp(20px,5vw,64px) 20px;
+      opacity:0; transform:translateY(-10px); pointer-events:none;
+      transition:opacity .25s var(--ease), transform .25s var(--ease);
+    }
+    .nav.is-open{ opacity:1; transform:translateY(0); pointer-events:auto; }
+    .nav ul{ flex-direction:column; gap:14px; }
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:100svh; min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; gap:22px; padding:calc(var(--header-h) + 40px) 24px 64px;
+    background:
+      radial-gradient(55% 45% at 18% 15%, rgba(140,125,255,.16), transparent 65%),
+      radial-gradient(50% 45% at 85% 80%, rgba(127,240,207,.16), transparent 65%),
+      var(--pearl);
+    position:relative; overflow:hidden;
+  }
+  .hero__kicker{
+    font-family:'Space Grotesk',monospace; font-size:.8rem; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--ink-dim);
+  }
+  .hero__name{
+    font-size:clamp(2.6rem, 9vw, 6rem); line-height:1.02; max-width:18ch;
+    background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+
+  /* signature: the "runway strip" — a holographic light bar with a
+     spotlight sweep, standing in for the literal runway. */
+  .runway{
+    width:min(520px,90%); height:10px; border-radius:999px; position:relative;
+    background:var(--grad); overflow:hidden; margin:4px 0;
+  }
+  .runway::after{
+    content:""; position:absolute; inset:0; width:40%;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,.85), transparent);
+    animation:runway-sweep 2.6s ease-in-out infinite;
+  }
+  @keyframes runway-sweep{ 0%{ transform:translateX(-120%); } 100%{ transform:translateX(320%); } }
+  @media (prefers-reduced-motion:reduce){ .runway::after{ animation:none; display:none; } }
+
+  .hero__sub{
+    max-width:42ch; font-size:1.02rem; color:var(--ink-dim); margin:0;
+  }
+  .hero__actions{ display:flex; flex-wrap:wrap; gap:14px; justify-content:center; margin-top:6px; }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    text-decoration:none; padding:.85em 1.8em; border-radius:999px;
+    font-family:'Space Grotesk',monospace; font-size:.82rem; letter-spacing:.03em;
+    font-weight:600; border:none; cursor:pointer;
+    transition:transform .25s var(--ease), box-shadow .25s var(--ease);
+  }
+  .btn--primary{ background:var(--ink); color:var(--pearl); }
+  .btn--primary:hover, .btn--primary:focus-visible{ transform:translateY(-2px); box-shadow:0 10px 26px rgba(21,18,32,.22); }
+  .btn--ghost{ background:transparent; color:var(--ink); border:1px solid var(--line-strong); }
+  .btn--ghost:hover, .btn--ghost:focus-visible{ border-color:var(--violet); color:var(--violet); }
+  .btn--ghost-light{ background:transparent; color:var(--pearl); border:1px solid var(--line-light-strong); }
+  .btn--ghost-light:hover, .btn--ghost-light:focus-visible{ border-color:var(--mint); color:var(--mint); }
+
+  .chip{
+    display:inline-flex; align-items:center; gap:8px;
+    border:1px solid var(--line-strong); border-radius:999px;
+    padding:.5em 1.1em; font-family:'Space Grotesk',monospace; font-size:.76rem;
+    letter-spacing:.05em; text-transform:uppercase; color:var(--ink-dim);
+  }
+
+  /* ---------- ticker ---------- */
+  .ticker{ background:var(--ink); color:var(--pearl); padding:12px 0; overflow:hidden; }
+  .ticker__track{ display:flex; width:max-content; gap:2.4em; animation:scroll-left 30s linear infinite; }
+  .ticker__track span{
+    font-family:'Space Grotesk',monospace; font-size:.8rem; letter-spacing:.16em;
+    text-transform:uppercase; white-space:nowrap;
+  }
+  .ticker__track span::after{ content:"✦"; margin-left:2.4em; color:var(--mint); font-size:.7em; }
+  @keyframes scroll-left{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+  @media (prefers-reduced-motion:reduce){ .ticker__track{ animation:none; } .ticker{ overflow-x:auto; } }
+
+  /* ---------- sections ---------- */
+  .section{ padding:clamp(64px,10vw,120px) clamp(20px,5vw,64px); position:relative; }
+  .section--tint{ background:var(--pearl-2); }
+  .section--deep{ background:var(--deep); color:var(--pearl); }
+  .section-inner{ max-width:var(--max); margin:0 auto; }
+  .folio{ display:flex; align-items:center; gap:16px; margin-bottom:44px; }
+  .folio::after{ content:""; flex:1; height:1px; background:var(--line); }
+  .section--deep .folio::after{ background:var(--line-light); }
+  .section--deep .eyebrow{ color:var(--mint); }
+  .folio h2{ font-size:clamp(1.8rem,3.2vw,2.5rem); white-space:nowrap; }
+
+  [data-reveal]{ opacity:0; transform:translateY(18px); transition:opacity .7s var(--ease), transform .7s var(--ease); }
+  [data-reveal].is-visible{ opacity:1; transform:none; }
+  @media (prefers-reduced-motion:reduce){ [data-reveal]{ opacity:1!important; transform:none!important; transition:none!important; } }
+
+  /* ---------- the show (about) ---------- */
+  .about{ display:grid; grid-template-columns:.8fr 1fr; gap:clamp(28px,5vw,64px); align-items:center; }
+  .placeholder-tile{
+    border-radius:14px; aspect-ratio:4/5; position:relative; overflow:hidden;
+    background:linear-gradient(155deg, var(--pearl-2), #ddd8ea);
+    border:1px solid var(--line);
+  }
+  .placeholder-tile img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .about__content h2{ font-size:clamp(1.9rem,3.4vw,2.6rem); margin-bottom:18px; }
+  .about__lede{ color:var(--ink-dim); }
+  .about__lede::first-letter{
+    font-family:'Unbounded',sans-serif; font-weight:800; color:var(--violet);
+    font-size:2.6em; float:left; line-height:.8; padding:.06em .1em 0 0;
+  }
+  .meta-list{ margin-top:26px; display:flex; flex-direction:column; gap:16px; }
+  .meta-list li{ display:flex; align-items:flex-start; gap:12px; font-size:.95rem; color:var(--ink-dim); }
+  .meta-list svg{ width:19px; height:19px; flex-shrink:0; margin-top:3px; color:var(--violet); }
+  .meta-list strong{ color:var(--ink); font-weight:600; }
+
+  @media (max-width:760px){ .about{ grid-template-columns:1fr; } }
+
+  /* ---------- runway looks (card carousel) ---------- */
+  .carousel{ position:relative; display:flex; align-items:center; gap:14px; max-width:420px; margin:0 auto; }
+  .carousel__viewport{ flex:1; overflow:hidden; border-radius:14px; }
+  .carousel__track{ display:flex; transition:transform .45s var(--ease); }
+  .carousel__track .look{ flex:0 0 100%; margin:0; }
+  .carousel__arrow{
+    flex-shrink:0; width:44px; height:44px; border-radius:50%;
+    background:var(--pearl); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; color:var(--ink);
+    transition:border-color .25s var(--ease), transform .25s var(--ease), color .25s var(--ease);
+  }
+  .carousel__arrow:hover, .carousel__arrow:focus-visible{ border-color:var(--violet); color:var(--violet); transform:scale(1.05); }
+  .carousel__arrow svg{ width:20px; height:20px; }
+  .carousel__dots{ display:flex; justify-content:center; gap:8px; margin-top:18px; }
+  .carousel__dots button{
+    width:8px; height:8px; border-radius:50%; border:none;
+    background:var(--line-strong); cursor:pointer; padding:0;
+    transition:background .25s var(--ease), transform .25s var(--ease);
+  }
+  .carousel__dots button.is-active{ background:var(--violet); transform:scale(1.3); }
+
+  .look{
+    border-radius:14px; position:relative; overflow:hidden; cursor:default;
+    aspect-ratio:3/4;
+    background:linear-gradient(155deg, var(--pearl-2), #ddd8ea);
+    border:1px solid var(--line);
+  }
+  .look img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .look__label{
+    position:absolute; left:16px; bottom:16px; color:var(--ink);
+    font-family:'Space Grotesk',monospace; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase;
+    background:rgba(245,244,248,.82); padding:.45em .9em; border-radius:999px;
+  }
+
+  @media (min-width:600px){ .carousel{ max-width:600px; } }
+
+  /* ---------- runway films ---------- */
+  .films__grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,260px));
+    justify-content:center; gap:26px;
+  }
+  .film-card{
+    aspect-ratio:9/16; border-radius:14px; position:relative; overflow:hidden;
+    background:linear-gradient(160deg, #241f38, var(--deep));
+  }
+  .film-card__play{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:56px; height:56px; border-radius:50%; background:var(--grad);
+    display:flex; align-items:center; justify-content:center; color:var(--deep);
+    border:none; cursor:pointer; transition:transform .3s var(--ease);
+  }
+  .film-card:hover .film-card__play{ transform:translate(-50%,-50%) scale(1.08); }
+  .film-card__play svg{ width:20px; height:20px; margin-left:2px; }
+  .film-card__label{
+    position:absolute; left:14px; bottom:12px; font-family:'Space Grotesk',monospace;
+    font-size:.76rem; letter-spacing:.06em; text-transform:uppercase; color:var(--pearl);
+    background:rgba(12,10,20,.5); padding:.3em .7em; border-radius:999px; pointer-events:none;
+  }
+
+  /* ---------- video "sub window" (modal) ---------- */
+  .video-modal{ position:fixed; inset:0; z-index:300; display:none; align-items:center; justify-content:center; padding:24px; }
+  .video-modal.is-open{ display:flex; }
+  .video-modal__backdrop{ position:absolute; inset:0; background:rgba(12,10,20,.88); backdrop-filter:blur(4px); }
+  .video-modal__box{
+    position:relative; z-index:1; background:var(--deep-raised); border-radius:14px; overflow:hidden;
+    width:100%; max-width:400px; border:1px solid var(--line-light-strong);
+    box-shadow:0 30px 70px rgba(0,0,0,.5);
+  }
+  .video-modal__close{
+    position:absolute; top:10px; right:10px; z-index:2;
+    width:38px; height:38px; border-radius:50%;
+    background:rgba(12,10,20,.6); border:1px solid var(--line-light-strong); cursor:pointer;
+    display:flex; align-items:center; justify-content:center; color:var(--pearl);
+  }
+  .video-modal__close svg{ width:18px; height:18px; }
+  .video-modal__video{ display:block; width:100%; max-height:70vh; background:#000; }
+  .video-modal__caption{ padding:16px 18px 20px; color:var(--pearl); }
+  .video-modal__caption p{ font-size:.82rem; line-height:1.6; margin:0 0 10px; color:rgba(245,244,248,.8); }
+  .video-modal__links{ display:flex; flex-wrap:wrap; gap:16px; align-items:center; }
+  .video-modal__link{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'Space Grotesk',monospace; font-size:.76rem; letter-spacing:.04em; text-transform:uppercase;
+    color:var(--mint); text-decoration:none; background:none; border:none; padding:0; cursor:pointer;
+  }
+  .video-modal__link:hover, .video-modal__link:focus-visible{ color:var(--pink); }
+  .video-modal__link--copy.is-copied{ color:#8fe08a; }
+
+  /* ---------- front row (contact) ---------- */
+  .contact__grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:34px; margin-bottom:40px; }
+  .contact__item{ display:flex; gap:14px; }
+  .contact__item h3{
+    font-family:'Space Grotesk',monospace; font-size:.74rem; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--mint); font-weight:600; margin-bottom:8px;
+  }
+  .contact__item svg{ width:20px; height:20px; color:var(--mint); flex-shrink:0; margin-top:2px; }
+  .contact__item a{ text-decoration:none; color:rgba(245,244,248,.78); }
+  .contact__item a:hover, .contact__item a:focus-visible{ color:var(--mint); }
+
+  /* ---------- footer ---------- */
+  .site-footer{
+    background:var(--deep); color:rgba(245,244,248,.5);
+    text-align:center; padding:26px 20px; font-family:'Space Grotesk',monospace;
+    font-size:.76rem; border-top:1px solid var(--line-light); letter-spacing:.03em;
+  }
+
+  .sr-icons{ position:absolute; width:0; height:0; overflow:hidden; }
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<!-- shared icon sprite, no external requests -->
+<svg class="sr-icons" aria-hidden="true">
+  <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 6 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-6-3.8-9s1.3-6.3 3.8-9z"/></symbol>
+  <symbol id="i-seat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"/><path d="M4 10h16v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-5z"/><path d="M6 17v3M18 17v3"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9L12 2z"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 6.5l9 6.5 9-6.5"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.4"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></symbol>
+</svg>
+
+<header class="site-header">
+  <a href="#hero" class="brand">FAB &amp; <span>FIERCE</span></a>
+  <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav" aria-label="Toggle navigation menu">
+    <svg class="icon-menu"><use href="#i-menu"/></svg>
+    <svg class="icon-close"><use href="#i-close"/></svg>
+  </button>
+  <nav class="nav" id="siteNav">
+    <ul>
+      <li><a href="#about">The Show</a></li>
+      <li><a href="#looks">Runway Looks</a></li>
+      <li><a href="#films">Runway Films</a></li>
+      <li><a href="#contact">Front Row</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+
+  <section class="hero" id="hero">
+    <p class="hero__kicker">Digital Runway — Global Front Row</p>
+    <h1 class="hero__name">FAB &amp; FIERCE</h1>
+    <div class="runway" aria-hidden="true"></div>
+    <p class="hero__sub">The runway magic of the digital world — front row access to every look, every walk, streamed to fashion's fiercest global audience.</p>
+    <div class="hero__actions">
+      <!-- PLACEHOLDER: point this at your real signup / ticketing link -->
+      <a class="btn btn--primary" href="mailto:frontrow@fabandfierce-placeholder.com">
+        <svg width="16" height="16"><use href="#i-seat"/></svg>
+        Get Front Row Access
+      </a>
+      <a class="btn btn--ghost" href="#films">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-play"/></svg>
+        Watch the Show
+      </a>
+    </div>
+    <span class="chip"><svg width="15" height="15"><use href="#i-globe"/></svg> 100% Digital · Worldwide</span>
+  </section>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker__track">
+      <span>Runway Magic</span><span>Digital World</span><span>Front Row Access</span><span>Fab &amp; Fierce</span><span>Fashion Show</span>
+      <span>Runway Magic</span><span>Digital World</span><span>Front Row Access</span><span>Fab &amp; Fierce</span><span>Fashion Show</span>
+    </div>
+  </div>
+
+  <section class="section" id="about">
+    <div class="section-inner">
+      <div class="about">
+        <div class="placeholder-tile" data-reveal>
+          <!-- Using look-01.jpg here since a dedicated show-still image wasn't provided.
+               Swap the src below for a real show-still photo any time. -->
+          <img src="images/look-01.jpg" alt="Signature look from the Fab & Fierce digital runway" width="342" height="413">
+        </div>
+        <div class="about__content" data-reveal>
+          <span class="eyebrow">The Show</span>
+          <h2>Front row, wherever you are.</h2>
+          <p class="about__lede">Fab &amp; Fierce brings the energy of a live runway into the digital world — real shows, real looks, streamed with front-row intimacy to an audience that spans the globe.</p>
+          <ul class="meta-list">
+            <li><svg><use href="#i-globe"/></svg> <span><strong>Format:</strong> A fully digital runway, streamed live and on demand</span></li>
+            <li><svg><use href="#i-seat"/></svg> <span><strong>Access:</strong> Front-row seating for every viewer — no venue required</span></li>
+            <li><svg><use href="#i-spark"/></svg> <span><strong>Attitude:</strong> Fab and fierce fashion, unapologetically bold</span></li>
+            <li><svg><use href="#i-send"/></svg> <span><strong>Open</strong> for brand partnerships and designer collaborations</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tint" id="looks">
+    <div class="section-inner">
+      <div class="folio"><span class="eyebrow">Runway Looks</span></div>
+      <h2 style="margin-bottom:44px; font-size:clamp(1.9rem,3.4vw,2.6rem);">This season's looks</h2>
+
+      <!--
+        CARD CAROUSEL — one look at a time, with left/right arrows.
+        To add a new photo: copy one whole <div class="look">...</div>
+        block (inside carousel__track) and edit its image + label.
+      -->
+      <div class="carousel" data-reveal>
+        <button class="carousel__arrow" id="lookPrev" type="button" aria-label="Previous look">
+          <svg><use href="#i-chevron-left"/></svg>
+        </button>
+
+        <div class="carousel__viewport">
+          <div class="carousel__track" id="lookTrack">
+            <div class="look">
+              <img src="images/look-01.jpg" alt="Runway look 01" width="349" height="366">
+              <span class="look__label">Look 01</span>
+            </div>
+            <div class="look">
+              <img src="images/look-02.jpg" alt="Runway look 02" width="353" height="380">
+              <span class="look__label">Look 02</span>
+            </div>
+            <div class="look">
+              <img src="images/look-03.jpg" alt="Runway look 03" width="347" height="354">
+              <span class="look__label">Look 03</span>
+            </div>
+            <div class="look">
+              <img src="images/look-04.jpg" alt="Runway look 04" width="330" height="409">
+              <span class="look__label">Look 04</span>
+            </div>
+            <div class="look">
+              <img src="images/look-05.jpg" alt="Runway look 05" width="342" height="392">
+              <span class="look__label">Look 05</span>
+            </div>
+            <div class="look">
+              <img src="images/look-06.jpg" alt="Runway look 06" width="342" height="392">
+              <span class="look__label">Look 06</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="carousel__arrow" id="lookNext" type="button" aria-label="Next look">
+          <svg><use href="#i-chevron-right"/></svg>
+        </button>
+      </div>
+      <div class="carousel__dots" id="lookDots"></div>
+    </div>
+  </section>
+
+  <section class="section" id="films">
+    <div class="section-inner">
+      <div class="folio"><span class="eyebrow">Runway Films</span></div>
+      <h2 style="margin-bottom:44px; font-size:clamp(1.9rem,3.4vw,2.6rem);">Watch the walk</h2>
+      <div class="films__grid">
+        <!--
+          Each film-card opens the pop-up "sub window" when you click
+          play. data-video tells the pop-up which file to load —
+          data-title is only used for the aria-label. No poster
+          image is used (none was provided) — the gradient background
+          from CSS shows behind the play button instead.
+        -->
+        <div class="film-card" data-reveal data-id="film-1" data-video="videos/levideo1.mp4" data-title="Runway Film 01">
+          <button class="film-card__play" type="button" aria-label="Play Runway Film 01">
+            <svg><use href="#i-play"/></svg>
+          </button>
+          <span class="film-card__label">Runway Film 01</span>
+        </div>
+        <div class="film-card" data-reveal data-id="film-2" data-video="videos/levideo2.mp4" data-title="Runway Film 02">
+          <button class="film-card__play" type="button" aria-label="Play Runway Film 02">
+            <svg><use href="#i-play"/></svg>
+          </button>
+          <span class="film-card__label">Runway Film 02</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--deep" id="contact">
+    <div class="section-inner">
+      <div class="folio"><span class="eyebrow">Front Row</span></div>
+      <h2 style="margin-bottom:44px; font-size:clamp(1.9rem,3.4vw,2.6rem);">Claim your seat</h2>
+      <div class="contact__grid">
+        <div class="contact__item" data-reveal>
+          <svg><use href="#i-mail"/></svg>
+          <!-- PLACEHOLDER: replace with the real press/booking address -->
+          <div><h3>Email</h3><p><a href="mailto:frontrow@fabandfierce-placeholder.com">frontrow@fabandfierce-placeholder.com</a></p></div>
+        </div>
+        <div class="contact__item" data-reveal>
+          <svg><use href="#i-camera"/></svg>
+          <!-- PLACEHOLDER: replace with the real Instagram handle -->
+          <div><h3>Instagram</h3><p><a href="https://instagram.com/fabandfierce.placeholder" target="_blank" rel="noopener noreferrer">@fabandfierce.placeholder</a></p></div>
+        </div>
+        <div class="contact__item" data-reveal>
+          <svg><use href="#i-globe"/></svg>
+          <!-- PLACEHOLDER: replace with the real TikTok handle -->
+          <div><h3>TikTok</h3><p><a href="https://tiktok.com/@fabandfierce.placeholder" target="_blank" rel="noopener noreferrer">@fabandfierce.placeholder</a></p></div>
+        </div>
+      </div>
+      <a class="btn btn--ghost-light" href="mailto:frontrow@fabandfierce-placeholder.com">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-send"/></svg>
+        Request Front Row Access
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<!--
+  VIDEO "SUB WINDOW" (pop-up modal)
+  Opens when a Runway Film's play button is clicked. The caption
+  text and the link below the video are both easy to edit right here.
+-->
+<div class="video-modal" id="videoModal" aria-hidden="true">
+  <div class="video-modal__backdrop" data-close></div>
+  <div class="video-modal__box" role="dialog" aria-modal="true" aria-label="Video player">
+    <button class="video-modal__close" type="button" data-close aria-label="Close video">
+      <svg><use href="#i-close"/></svg>
+    </button>
+    <video class="video-modal__video" id="videoModalPlayer" controls playsinline></video>
+    <div class="video-modal__caption">
+      <p>This film is © 2026 FAB &amp; FIERCE — digital runway content. It is authorized for playback on this website only. Rehosting, re-uploading, downloading, or sharing this film on any other site or platform is <strong>not permitted</strong>.</p>
+      <div class="video-modal__links">
+        <button class="video-modal__link video-modal__link--copy" id="videoModalCopyLink" type="button">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1.5-1.5"/></svg>
+          <span id="videoModalCopyLabel">Copy link to this film</span>
+        </button>
+        <!-- PLACEHOLDER: replace with the real press/booking address -->
+        <a class="video-modal__link" href="mailto:frontrow@fabandfierce-placeholder.com">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-send"/></svg>
+          Contact for licensing
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  &copy; <span id="year">2026</span> FAB &amp; FIERCE — Digital Runway Fashion Show
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  var toggle = document.getElementById('navToggle');
+  var nav = document.getElementById('siteNav');
+  toggle.addEventListener('click', function(){
+    var open = nav.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  nav.querySelectorAll('a').forEach(function(link){
+    link.addEventListener('click', function(){
+      nav.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && nav.classList.contains('is-open')){
+      nav.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.focus();
+    }
+  });
+
+  /* ---------- Runway Looks card carousel ---------- */
+  (function(){
+    var track = document.getElementById('lookTrack');
+    var slides = Array.prototype.slice.call(track.querySelectorAll('.look'));
+    var dotsWrap = document.getElementById('lookDots');
+    var prevBtn = document.getElementById('lookPrev');
+    var nextBtn = document.getElementById('lookNext');
+    var index = 0;
+
+    slides.forEach(function(_, i){
+      var dot = document.createElement('button');
+      dot.type = 'button';
+      dot.setAttribute('aria-label', 'Go to look ' + (i + 1));
+      dot.addEventListener('click', function(){ goTo(i); });
+      dotsWrap.appendChild(dot);
+    });
+    var dots = Array.prototype.slice.call(dotsWrap.children);
+
+    function render(){
+      track.style.transform = 'translateX(-' + (index * 100) + '%)';
+      dots.forEach(function(dot, i){ dot.classList.toggle('is-active', i === index); });
+    }
+    function goTo(i){
+      index = (i + slides.length) % slides.length;
+      render();
+    }
+
+    prevBtn.addEventListener('click', function(){ goTo(index - 1); });
+    nextBtn.addEventListener('click', function(){ goTo(index + 1); });
+
+    render();
+  })();
+
+  /* ---------- Video "sub window" (modal) ---------- */
+  (function(){
+    var modal = document.getElementById('videoModal');
+    var player = document.getElementById('videoModalPlayer');
+    var copyBtn = document.getElementById('videoModalCopyLink');
+    var copyLabel = document.getElementById('videoModalCopyLabel');
+    var cards = document.querySelectorAll('.film-card');
+    var currentId = null;
+
+    function findCardById(id){
+      var found = null;
+      cards.forEach(function(card){
+        if (card.getAttribute('data-id') === id) found = card;
+      });
+      return found;
+    }
+
+    function openModal(card, opts){
+      opts = opts || {};
+      currentId = card.getAttribute('data-id');
+      player.src = card.getAttribute('data-video');
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      player.play().catch(function(){ /* autoplay blocked; controls are visible so the viewer can press play */ });
+      // Give this film its own shareable address, e.g. yoursite.com/#film-1
+      if (!opts.skipHash) {
+        history.pushState({ video: currentId }, '', '#' + currentId);
+      }
+    }
+    function closeModal(opts){
+      opts = opts || {};
+      player.pause();
+      player.removeAttribute('src');
+      player.load();
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+      currentId = null;
+      if (!opts.skipHash && location.hash) {
+        history.pushState({}, '', location.pathname + location.search);
+      }
+    }
+
+    cards.forEach(function(card){
+      var playBtn = card.querySelector('.film-card__play');
+      playBtn.addEventListener('click', function(){
+        openModal(card);
+      });
+    });
+
+    modal.querySelectorAll('[data-close]').forEach(function(el){
+      el.addEventListener('click', function(){ closeModal(); });
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && modal.classList.contains('is-open')){
+        closeModal();
+      }
+    });
+
+    // "Copy link to this film" button — copies a link that reopens
+    // this exact film's pop-up window when someone else opens it.
+    copyBtn.addEventListener('click', function(){
+      if (!currentId) return;
+      var shareUrl = location.origin + location.pathname + '#' + currentId;
+      var done = function(){
+        copyLabel.textContent = 'Link copied!';
+        copyBtn.classList.add('is-copied');
+        setTimeout(function(){
+          copyLabel.textContent = 'Copy link to this film';
+          copyBtn.classList.remove('is-copied');
+        }, 2000);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(shareUrl).then(done).catch(function(){
+          window.prompt('Copy this link:', shareUrl);
+        });
+      } else {
+        window.prompt('Copy this link:', shareUrl);
+      }
+    });
+
+    // If someone opens a link like yoursite.com/#film-1, open that
+    // film's pop-up automatically.
+    function openFromHash(){
+      var id = location.hash.replace('#', '');
+      if (!id) return;
+      var card = findCardById(id);
+      if (card) openModal(card, { skipHash: true });
+    }
+    window.addEventListener('popstate', function(){
+      if (location.hash) {
+        openFromHash();
+      } else {
+        closeModal({ skipHash: true });
+      }
+    });
+    openFromHash();
+  })();
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('[data-reveal]').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('[data-reveal]').forEach(function(el){ el.classList.add('is-visible'); });
+  }
+</script>
+
+</body>
+</html>
